@@ -1,84 +1,86 @@
 package org.java.travel;
-import java.time.LocalDate;
-import java.util.InputMismatchException;
-import java.util.Scanner;
 
-//1.chiedo all'utente se vuole inserire una vacanza o uscire
-//2.se vuole inserirla, chiedo la destinazione, giorno/mese/anno di partenza e di ritorno
-//3.viene creata una nuova Vacanza con i dati inseriti dall'utente.
-//4.In console stampa  “Hai prenotato una vacanza di [numero di giorni] giorni a [destinazione]
-// dal [data inizio formattata] al [data fine formattata]“.
-//5.se viene generato un errore, non far interrompere il programma, ma gestiscilo
-//richiedendo all'utente di inserire i dati corretti.
+
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
+import java.util.Scanner;
 
 public class TravelAgency {
 
     public static void main(String[] args) {
-    Scanner sc = new Scanner(System.in);
-    Holidays holiday = null;
 
-    boolean exit = false;
+        Scanner sc = new Scanner(System.in);
 
-    while(!exit) {
-        System.out.print("Do you want to create a new holidays destination? 1. YES 2. NO");
-        int userChoice = 0;
+        boolean exit = false;
 
-        try {
 
-            userChoice = Integer.parseInt(sc.next());
-        }
-        catch(NumberFormatException exception)
+        while(!exit)
         {
-            System.out.println("Error. You should insert a number.");
-        }
-
-            switch(userChoice)
-            {
-                case 1:
-
-                System.out.println("Insert destination: ");
-                sc.nextLine();
-                String destinationInput = sc.nextLine();
-                System.out.println("Insert first day of holidays: (yyyy/mm/dd)");
-                LocalDate firstDayOfHolidaysInput = LocalDate.parse(sc.nextLine());
-                System.out.println("Insert last day of holidays: (yyyy/mm/dd)");
-                LocalDate lastDayOfHolidaysInput = LocalDate.parse(sc.nextLine());
+            System.out.println("What would you like to do? 1. create a new holiday 2. EXIT");
+            String userChoice = sc.nextLine();
 
 
-                try {
-                    holiday = new Holidays(destinationInput, firstDayOfHolidaysInput, lastDayOfHolidaysInput);
-                } catch (RuntimeException e) {
-                    System.out.println("Invalid parameters. Cannot create a new holiday.");
-                    System.out.println(e.getMessage());
-                }
 
+            switch (userChoice) {
+                case "1":
+                    Holidays holidays = null;
+                    String destinationInput = null;
+                    LocalDate firstDayOfHolidaysInput = null;
+                    LocalDate lastDayOfHolidaysInput = null;
 
-                System.out.println(holiday);
-                break;
+                    try {
+                        System.out.println("Destination: ");
+                        destinationInput = sc.nextLine();
+                        System.out.println("First day of your holiday: (yyyy-mm-dd)");
+                        firstDayOfHolidaysInput = LocalDate.parse(sc.nextLine());
+                        System.out.println("Last day of your holiday: (yyyy-mm-dd)");
+                        lastDayOfHolidaysInput = LocalDate.parse(sc.nextLine());
+                        holidays = new Holidays(destinationInput, firstDayOfHolidaysInput, lastDayOfHolidaysInput);
+                        System.out.println("Your Holiday:"+" Destination= "+holidays.getDestination()+" Number of days= "+holidays.getDurationOfMyHoliday()+" days.");
+                        System.out.println(holidays);
+                    }
+                    catch (DateTimeParseException e) {
+                        System.out.println("Invalid format for first or last day of holidays.");
 
-                case 2:
+                    }
+                    catch (InvalidDateException e)
+                    {
+                        System.out.println("Invalid date.");
+                        System.out.println(e.getMessage());
+                    }
+                    catch (InvalidDestinationException e)
+                    {
+                        System.out.println("Destination cannot be null or an empty string.");
+                        System.out.println(e.getMessage());
+                    }
+                    catch (NullPointerException e)
+                    {
+                        System.out.println("Parameters cannot be null.");
+                        System.out.println(e.getMessage());
+
+                    }
+
+                    break;
+
+                case "2":
                     exit = true;
                     break;
 
                 default:
-                    System.out.println("Invalid choice. Choose a number between 1-2.");
+                    System.out.println("Insert 1 or 2.");
                     break;
-
-
-
             }
 
 
 
+        }
+
+
+        System.out.println("WE HOPE TO SEE YOU AGAIN!");
+
+        sc.close();
     }
 
-
-        System.out.println("We hope to see you again!");
-
-
-
-
-    }
 
 
 
